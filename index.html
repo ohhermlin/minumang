@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="et">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="Hüppa platvormidel, leia kuldnupud ja kogu viktoriinipunkte.">
+		<title>Hüppeviktoriin</title>
+		<link rel="stylesheet" href="style.css">
+		<script src="loogika.js" defer></script>
+	</head>
+	<body>
+		<header class="topbar">
+			<a class="wordmark" href="./" aria-label="Hüppeviktoriin, avaleht">
+				<span class="wordmark-mark" aria-hidden="true">H</span>
+				<span>Hüppeviktoriin</span>
+			</a>
+			<p class="topbar-note">Hüppa. Mõtle. Kogu punkte.</p>
+		</header>
+
+		<main class="game-shell">
+			<section class="intro" aria-labelledby="page-title">
+				<div>
+					<p class="eyebrow">Väike hüpe, suur teadmine</p>
+					<h1 id="page-title">Leia kuldnupud.</h1>
+					<p class="intro-copy">Liigu platvormidel ja vasta küsimustele, et punkte teenida.</p>
+				</div>
+				<div class="scoreboard" aria-label="Mängu seis">
+					<div class="score-item">
+						<span class="score-label">Punkte</span>
+						<strong id="score">0</strong>
+					</div>
+					<span class="score-divider" aria-hidden="true"></span>
+					<div class="score-item">
+						<span class="score-label">Nupud</span>
+						<strong><span id="collected">0</span><span class="score-total"> / 5</span></strong>
+					</div>
+				</div>
+			</section>
+
+			<section class="game-section" aria-label="Platvormimäng">
+				<div class="game-frame">
+					<div class="game-bar">
+						<span class="level-label"><span class="live-dot" aria-hidden="true"></span> <span id="level-number">Rada 01</span> <span class="level-separator">/</span> <span class="level-subtitle">Teadmiste hüpe</span></span>
+						<div class="game-actions">
+							<button class="shop-open-button" id="open-shop" type="button" aria-haspopup="dialog">
+								<span aria-hidden="true">▣</span><span id="shop-button-label">Pood</span>
+							</button>
+							<button class="restart-button" id="restart-button" type="button" title="Alusta mängu uuesti">
+								<span aria-hidden="true">↻</span> Alusta uuesti
+							</button>
+						</div>
+					</div>
+					<div class="canvas-wrap">
+						<div class="life-display" id="life-display" role="img" aria-label="3 elu alles">
+							<span class="life-heart" aria-hidden="true">♥</span>
+							<span class="life-heart" aria-hidden="true">♥</span>
+							<span class="life-heart" aria-hidden="true">♥</span>
+						</div>
+						<div class="flight-status" id="flight-status" hidden aria-live="polite"></div>
+						<canvas id="game" width="960" height="540" aria-label="Platvormirada. Liigu noolte või A- ja D-klahviga ning hüppa tühikuklahviga.">
+							Sinu brauser ei toeta canvas-elementi.
+						</canvas>
+						<div class="canvas-hint" aria-hidden="true">
+							<span>←</span><span>→</span><span class="hint-word">LIIGU</span>
+							<span class="hint-space">TÜHIK</span><span class="hint-word">HÜPPA</span>
+						</div>
+					</div>
+					<div class="mobile-controls" aria-label="Puutejuhtimine">
+						<div class="move-controls">
+							<button class="control-button" type="button" data-control="left" aria-label="Liigu vasakule">←</button>
+							<button class="control-button" type="button" data-control="right" aria-label="Liigu paremale">→</button>
+						</div>
+						<button class="control-button jump-button" type="button" data-control="jump" aria-label="Hüppa">Hüppa <span aria-hidden="true">↑</span></button>
+					</div>
+				</div>
+				<p class="game-status" id="game-status" aria-live="polite">Liigu paremale ja hüppa kuldsete nuppude juurde.</p>
+			</section>
+		</main>
+
+		<dialog class="quiz-dialog" id="quiz-dialog" aria-labelledby="question-title">
+			<div class="dialog-topline">
+				<span class="question-tag"><span aria-hidden="true">✦</span> Kuldnupu küsimus</span>
+				<button class="close-button" id="close-dialog" type="button" aria-label="Sulge küsimus">×</button>
+			</div>
+			<p class="question-count" id="question-count">Küsimus 1 / 5</p>
+			<h2 id="question-title"></h2>
+			<div class="answer-list" id="answer-list"></div>
+			<p class="answer-feedback" id="answer-feedback" aria-live="polite"></p>
+		</dialog>
+
+		<dialog class="quiz-dialog shop-dialog" id="shop-dialog" aria-labelledby="shop-title">
+			<div class="dialog-topline">
+				<span class="question-tag">Varustuse pood</span>
+				<button class="close-button" id="close-shop" type="button" aria-label="Sulge pood">×</button>
+			</div>
+			<h2 id="shop-title">Pood</h2>
+			<p class="shop-balance">Sinu punktid: <strong id="shop-balance">0</strong></p>
+			<div class="shop-items">
+				<div class="shop-item">
+					<div class="shop-item-info">
+						<span class="shop-item-icon flight-icon" aria-hidden="true">↟</span>
+						<div>
+						<h3>Lendamisvõime</h3>
+						<p>Lenda 3 sekundit. Hoia hüppenuppu, et tõusta.</p>
+					</div>
+					</div>
+					<button class="shop-buy-button" id="buy-flight" type="button">300 p</button>
+				</div>
+				<div class="shop-item">
+					<div class="shop-item-info">
+						<span class="shop-item-icon heart-icon" aria-hidden="true">♥</span>
+						<div>
+						<h3>Lisaelu</h3>
+						<p>Lisa üks süda oma elude hulka.</p>
+					</div>
+					</div>
+					<button class="shop-buy-button" id="buy-life" type="button">500 p</button>
+				</div>
+				<div class="shop-item">
+					<div class="shop-item-info">
+						<span class="shop-item-icon speed-icon" aria-hidden="true">»</span>
+						<div>
+							<h3>Kiirus</h3>
+							<p>Iga ost lisab 0,5× kiirust. Praegu: <strong id="speed-level">1,0×</strong></p>
+						</div>
+					</div>
+					<button class="shop-buy-button" id="buy-speed" type="button">300 p</button>
+				</div>
+			</div>
+			<p class="shop-feedback" id="shop-feedback" aria-live="polite"></p>
+		</dialog>
+
+		<dialog class="quiz-dialog game-over-dialog" id="game-over-dialog" aria-labelledby="game-over-title">
+			<p class="question-tag">Sinu mäng lõppes</p>
+			<h2 id="game-over-title">Mäng läbi!</h2>
+			<p class="game-over-score">Kogusid <strong id="final-score">0</strong> punkti.</p>
+			<button class="continue-button" id="game-over-restart" type="button">Alusta uuesti</button>
+		</dialog>
+
+		<footer class="page-footer">
+			<span>Hüppeviktoriin</span>
+			<span>Väike mäng, palju teadmisi.</span>
+		</footer>
+	</body>
+</html>
