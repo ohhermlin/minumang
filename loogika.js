@@ -257,6 +257,7 @@ let levelTimer = null;
 let questionDeckLevel = 0;
 let invulnerableUntil = 0;
 let flightUntil = 0;
+let cheatFlightEnabled = false;
 let queuedFlightSeconds = 0;
 let lastFrame = 0;
 
@@ -280,7 +281,20 @@ function updateScore() {
   shopBalanceElement.textContent = String(score);
   speedLevelElement.textContent = `${(1 + speedBoosts * 0.5).toFixed(1).replace(".", ",")}×`;
 }
+function updateFlightStatus(now) {
+  if (cheatFlightEnabled) {
+    flightStatusElement.hidden = false;
+    flightStatusElement.textContent = "LENDAMINE AKTIIVNE (CHEAT)";
+    return;
+  }
 
+  const secondsLeft = Math.max(0, flightUntil - now) / 1000;
+  flightStatusElement.hidden = secondsLeft <= 0;
+
+  if (secondsLeft > 0) {
+    flightStatusElement.textContent = `Lend ${secondsLeft.toFixed(1)} s`;
+  }
+}
 function endGame(message) {
   gameFinished = true;
   player.velocityX = 0;
@@ -1081,6 +1095,17 @@ function startNextLevel() {
 }
 
 window.addEventListener("keydown", (event) => {
+    if (event.shiftKey && event.code === "Digit1" && !event.repeat) {
+    cheatFlightEnabled = !cheatFlightEnabled;
+
+    statusElement.textContent = cheatFlightEnabled
+      ? "CHEAT AKTIVEERITUD! Saad lennata!"
+      : "Lennucheat välja lülitatud.";
+
+    updateFlightStatus(performance.now());
+    event.preventDefault();
+    return;
+  }
   if (["ArrowLeft", "ArrowRight", "ArrowUp", " "].includes(event.key)) event.preventDefault();
   pressedKeys.add(event.key);
   if ([" ", "ArrowUp", "w", "W"].includes(event.key) && !event.repeat) jumpPressed = true;
